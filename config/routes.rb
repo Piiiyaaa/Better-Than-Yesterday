@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "likes/create"
+  get "likes/destroy"
   get "profiles/show"
   get "profiles/edit"
   get "profiles/update"
