@@ -1,17 +1,17 @@
-<div class="mt-2">
+<div class="mt-2" id="post_<%= post.id %>_like">
   <% if user_signed_in? %>
-    <% if current_user.like?(@post) %>
-      <%= button_to post_like_path(@post), method: :delete, class: "text-red-500" do %>
-        <i class="fas fa-heart"></i> <%= @post.likes.count %>
+    <% if current_user.like?(post) %>
+      <%= button_to post_like_path(post), method: :delete, class: "text-red-500", data: { turbo: true } do %>
+        <i class="fas fa-heart"></i> <%= post.likes.count %>
       <% end %>
     <% else %>
-      <%= button_to post_like_path(@post), method: :post, class: "text-gray-500 hover:text-red-500" do %>
-        <i class="far fa-heart"></i> <%= @post.likes.count %>
+      <%= button_to post_like_path(post), method: :post, class: "text-gray-500 hover:text-red-500", data: { turbo: true } do %>
+        <i class="far fa-heart"></i> <%= post.likes.count %>
       <% end %>
     <% end %>
   <% else %>
     <span class="text-gray-500">
-      <i class="far fa-heart"></i> <%= @post.likes.count %>
+      <i class="far fa-heart"></i> <%= post.likes.count %>
     </span>
   <% end %>
 </div>
