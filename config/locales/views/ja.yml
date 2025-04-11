@@ -50,3 +50,9 @@ ja:
     update:
       success: プロフィールが更新されました
       failure: プロフィールが更新できませんでした
+
+  likes:
+    create:
+      success: いいね!しました
+    destroy:
+      success: いいね!を外しました

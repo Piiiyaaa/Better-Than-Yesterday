@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "likes/create"
+  get "likes/destroy"
   get "profiles/show"
   get "profiles/edit"
   get "profiles/update"
@@ -7,7 +9,9 @@ Rails.application.routes.draw do
     registrations: "users/registrations",
     sessions: "users/sessions"
   }
-  resources :posts, only: %i[index new create show edit update destroy]
+  resources :posts, only: %i[index new create show edit update destroy] do
+    resource :like, only: [:create, :destroy]
+  end
   resources :daily_questions, only: [ :index, :show ]
   resource :profile, only: [ :show, :edit, :update ]
   # 他のユーザーのプロフィール

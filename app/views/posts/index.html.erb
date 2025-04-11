@@ -9,12 +9,13 @@
   <div class="grid gap-6">
   <% @posts.each do |post| %>
     <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-150 ease-in-out">
-      <div class="flex items-center mb-4">
+      <div class="flex items-center justify-between mb-4">
         <div class="text-gray-500">
           <%= post.user.username %>
           <span class="mx-2">•</span>
           <%= l(post.learning_date, format: :short) %>
         </div>
+            <%= render 'like_button', post: post %>
       </div>
       
       <h3 class="text-xl font-semibold mb-2">
