@@ -80,11 +80,11 @@ RSpec.configure do |config|
   
   # System Spec設定
   config.before(:each, type: :system) do
-    driven_by :remote_chrome
-    Capybara.server_host = '0.0.0.0'
-    Capybara.server_port = 3001  # 開発サーバーの3000と競合しないように
-    Capybara.app_host = 'http://web:3001'  # webコンテナ内のサーバーに接続
-
+      driven_by :selenium, using: :headless_chrome, options: {
+        browser: :remote,
+        url: ENV.fetch('SELENIUM_DRIVER_URL')
+      }
+      Capybara.server_host = 'web'
   # Seleniumのログディレクトリをクリア
   FileUtils.rm_rf(Dir[Rails.root.join('tmp/selenium_logs/*')])
   
