@@ -76,7 +76,7 @@ jobs:
           bundler-cache: true
           
       - name: Generate binstubs
-        run: bundle binstubs bundler-audit brakeman rubocop
+        run: bundle exec rubocop
         
       # セキュリティ監査
       - name: Security audit dependencies
