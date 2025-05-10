@@ -10,11 +10,11 @@ class User < ApplicationRecord
   def like(post)
     liked_posts << post unless like?(post)
   end
-  
+
   def unlike(post)
     liked_posts.delete(post)
   end
-  
+
   def like?(post)
     liked_posts.include?(post)
   end

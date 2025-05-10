@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
     before_action :authenticate_user!, except: [ :index ]
-    before_action :set_post, only: [:show, :edit, :update, :destroy]
-    before_action :check_post_owner, only: [:edit, :update, :destroy]
+    before_action :set_post, only: [ :show, :edit, :update, :destroy ]
+    before_action :check_post_owner, only: [ :edit, :update, :destroy ]
 
     def index
         @posts = Post.includes(:user)
@@ -62,5 +62,4 @@ class PostsController < ApplicationController
             redirect_to posts_path, alert: t("errors.messages.unauthorized_edit_post")
         end
     end
-
 end
