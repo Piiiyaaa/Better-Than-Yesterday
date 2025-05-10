@@ -8,7 +8,7 @@ RSpec.describe Post, type: :model do
         end
 
         it 'タイトルがないときにバリデーションが機能してinvalidになるか' do
-            post_without_title = build(:post, title:"")
+            post_without_title = build(:post, title: "")
             expect(post_without_title).to be_invalid
             expect(post_without_title.errors[:title]).not_to be_empty
         end
@@ -20,7 +20,7 @@ RSpec.describe Post, type: :model do
         end
 
         it '本文がないときにバリデーションが機能してinvalidになるか' do
-            post_without_body = build(:post, body:"")
+            post_without_body = build(:post, body: "")
             expect(post_without_body).to be_invalid
             expect(post_without_body.errors[:body]).not_to be_empty
         end
@@ -32,7 +32,7 @@ RSpec.describe Post, type: :model do
         end
 
         it '学習日がないときにバリデーションが機能してinvalidになるか' do
-            post_without_learning_date = build(:post, learning_date:"")
+            post_without_learning_date = build(:post, learning_date: "")
             expect(post_without_learning_date).to be_invalid
             expect(post_without_learning_date.errors[:learning_date]).not_to be_empty
         end
@@ -41,7 +41,7 @@ RSpec.describe Post, type: :model do
             post = create(:post)
             expect(post.user).to be_present
           end
-      
+
           it 'daily_questionとの関連付けが正しく機能しているか' do
             daily_question = create(:daily_question)
             post = daily_question.post
@@ -66,8 +66,8 @@ RSpec.describe Post, type: :model do
 
         it '新しいタグを保存できるか' do
             post = build(:post)
-            result = post.save_with_tags(tag_names: ['Ruby', 'Rails'])
-            
+            result = post.save_with_tags(tag_names: [ 'Ruby', 'Rails' ])
+
             expect(result).to be true
             expect(post.tags.count).to eq 2
             expect(post.tags.pluck(:name)).to contain_exactly('Ruby', 'Rails')
@@ -77,13 +77,12 @@ RSpec.describe Post, type: :model do
             post = create(:post)
             tag1 = create(:tag, name: 'Ruby')
             tag2 = create(:tag, name: 'Rails')
-            
+
             post.tags << tag1
             post.tags << tag2
-            
+
             expect(post.tags.count).to eq(2)
             expect(post.tags).to include(tag1, tag2)
           end
-
     end
 end

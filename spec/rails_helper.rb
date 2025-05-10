@@ -42,7 +42,7 @@ end
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include Devise::Test::IntegrationHelpers, type: :system
-  
+
   # DatabaseCleaner設定
   config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
@@ -63,7 +63,7 @@ RSpec.configure do |config|
     # assets/sprocketsディレクトリを削除したい場合
     FileUtils.rm_rf(Dir[Rails.root.join('tmp/assets/sprockets/*')])
   end
-  
+
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
@@ -77,7 +77,7 @@ RSpec.configure do |config|
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
-  
+
   # System Spec設定
   config.before(:each, type: :system) do
       driven_by :selenium, using: :headless_chrome, options: {
@@ -87,12 +87,11 @@ RSpec.configure do |config|
       Capybara.server_host = 'web'
   # Seleniumのログディレクトリをクリア
   FileUtils.rm_rf(Dir[Rails.root.join('tmp/selenium_logs/*')])
-  
+
   # Capybaraのキャッシュをクリア
   FileUtils.rm_rf(Dir[Rails.root.join('tmp/capybara/*')])
-
   end
-  
+
   # スクリーンショット設定（デバッグ用）
   config.after(:each, type: :system) do |example|
     if example.exception

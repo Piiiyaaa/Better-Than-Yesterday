@@ -4,7 +4,7 @@ class LikesController < ApplicationController
 
   def create
     current_user.like(@post)
-    
+
     respond_to do |format|
       format.html { redirect_back(fallback_location: @post, notice: t(".success")) }
       format.turbo_stream { render turbo_stream: turbo_stream.replace("post_#{@post.id}_like", partial: "posts/like_button", locals: { post: @post }) }
@@ -13,7 +13,7 @@ class LikesController < ApplicationController
 
   def destroy
     current_user.unlike(@post)
-    
+
     respond_to do |format|
       format.html { redirect_back(fallback_location: @post, notice: t(".success")) }
       format.turbo_stream { render turbo_stream: turbo_stream.replace("post_#{@post.id}_like", partial: "posts/like_button", locals: { post: @post }) }
