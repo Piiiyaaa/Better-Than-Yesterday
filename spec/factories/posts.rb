@@ -6,13 +6,14 @@ FactoryBot.define do
         association :user
     end
 
-    trait :with_image_post do
+    trait :with_image do
         after(:build) do |post|
-        post.images.attach(
-            io: File.open(Rails.root.join('app/assets/images/arror.png')),
-            filename: 'arror.png',
-            content_type: 'image/png'
-        )
+            file = StringIO.new("dummy image content")
+            post.image.attach(
+              io: file,
+              filename: 'test_image.jpg',
+              content_type: 'image/jpeg'
+            )
         end
     end
-end
+  end
