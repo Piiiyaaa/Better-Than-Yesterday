@@ -8,7 +8,6 @@ require 'rspec/rails'
 require 'database_cleaner/active_record'
 require 'capybara/rspec'
 
-# System Spec用のリモートChromeドライバー設定
 Capybara.register_driver :remote_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
   options.add_argument('--headless')
@@ -16,12 +15,23 @@ Capybara.register_driver :remote_chrome do |app|
   options.add_argument('--disable-dev-shm-usage')
   options.add_argument('--window-size=1400,1400')
 
-  Capybara::Selenium::Driver.new(
-    app,
-    browser: :remote,
-    url: ENV['SELENIUM_DRIVER_URL'] || 'http://chrome:4444/wd/hub',
-    options: options
-  )
+  # CI環境とローカル環境で異なる設定を使用
+  if ENV['CI'] == 'true'
+    # CI環境用設定
+    Capybara::Selenium::Driver.new(
+      app,
+      browser: :chrome,
+      options: options
+    )
+  else
+    # ローカルDocker環境用設定
+    Capybara::Selenium::Driver.new(
+      app,
+      browser: :remote,
+      url: ENV.fetch('SELENIUM_DRIVER_URL', 'http://selenium_chrome:4444/wd/hub'),
+      options: options
+    )
+  end
 end
 
 # スクリーンショット設定
@@ -80,24 +90,30 @@ RSpec.configure do |config|
 
   # System Spec設定
   config.before(:each, type: :system) do
-      driven_by :selenium, using: :headless_chrome, options: {
-        browser: :remote,
-        url: ENV.fetch('SELENIUM_DRIVER_URL')
-      }
+    if ENV['CI'] == 'true'
+      # GitHub Actions環境ではローカルChromeを使用
+      driven_by :selenium_chrome_headless
+    else
+      driven_by :remote_chrome
       Capybara.server_host = 'web'
-  # Seleniumのログディレクトリをクリア
-  FileUtils.rm_rf(Dir[Rails.root.join('tmp/selenium_logs/*')])
+      # Seleniumのログディレクトリをクリア
+      FileUtils.rm_rf(Dir[Rails.root.join('tmp/selenium_logs/*')])
 
-  # Capybaraのキャッシュをクリア
-  FileUtils.rm_rf(Dir[Rails.root.join('tmp/capybara/*')])
+      # Capybaraのキャッシュをクリア
+      FileUtils.rm_rf(Dir[Rails.root.join('tmp/capybara/*')])
+    end
   end
 
   # スクリーンショット設定（デバッグ用）
   config.after(:each, type: :system) do |example|
     if example.exception
       save_path = "tmp/screenshots/#{example.full_description.gsub(' ', '_').gsub(/[^\w]/, '')}.png"
-      page.save_screenshot(save_path)
-      puts "Screenshot saved to #{save_path}"
+      begin
+        page.save_screenshot(save_path)
+        puts "Screenshot saved to #{save_path}"
+      rescue Capybara::NotSupportedByDriverError => e
+        puts "Could not save screenshot: #{e.message}"
+      end
     end
   end
 end
