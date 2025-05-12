@@ -38,7 +38,23 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-          
+      
+      # Node.jsのセットアップを追加
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'yarn'
+      
+      # Yarnパッケージのインストール
+      - name: Install Yarn packages
+        run: yarn install
+      
+      # アセットのプリコンパイル
+      - name: Precompile assets
+        run: |
+          bundle exec rails assets:precompile
+
       # Chrome/Seleniumのセットアップ（SystemSpec用）
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@latest
