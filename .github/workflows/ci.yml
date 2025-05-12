@@ -1,9 +1,11 @@
-name: "Ruby on Rails CI"
+name: Ruby on Rails CI
+
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -21,62 +23,53 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    
+
     env:
       RAILS_ENV: test
       DATABASE_URL: "postgres://postgres:password@localhost:5433/myapp_test"
       DATABASE_HOST: localhost
       DATABASE_PORT: 5433
       DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: password  
-    
+      DATABASE_PASSWORD: password
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      
-      # Node.jsのセットアップを追加
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
           cache: 'yarn'
-      
-      # Yarnパッケージのインストール
+
       - name: Install Yarn packages
         run: yarn install
-      
-      # アセットのプリコンパイル
-      - name: Precompile assets
-        run: |
-          bundle exec rails assets:precompile
 
-      # Chrome/Seleniumのセットアップ（SystemSpec用）
+      - name: Precompile assets
+        run: bundle exec rails assets:precompile
+
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@latest
-        
+
       - name: Setup ChromeDriver
         uses: nanasess/setup-chromedriver@v2
-        
-      # ChromeDriverを起動
+
       - name: Start ChromeDriver
         run: |
           chromedriver --version
           chromedriver --port=9515 &
-          
-      # データベースのセットアップ
+
       - name: Set up database schema
         run: bin/rails db:schema:load
-        
-      # モデルテストの実行
+
       - name: Run model tests
         run: bundle exec rspec spec/models
-        
-      # SystemSpecの実行
+
       - name: Run system tests
         run: bundle exec rspec spec/system
 
@@ -85,21 +78,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-          
+
       - name: Generate binstubs
         run: bundle exec rubocop
-        
-      # セキュリティ監査
+
       - name: Security audit dependencies
         run: bundle exec bundler-audit --update
-        
+
       - name: Security audit application code
         run: bundle exec brakeman -q -w2
-        
+
       - name: Lint Ruby files
         run: bundle exec rubocop --parallel
