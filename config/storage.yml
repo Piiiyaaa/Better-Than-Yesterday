@@ -8,6 +8,10 @@ amazon:
   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
   region: ap-northeast-1
   bucket: bty-storage-20250325 
-  public: true  # これを追加
-  http_open_timeout: 60  # これを追加
+  public: true
+  http_open_timeout: 60
   http_read_timeout: 60 
+
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage_test") %>
