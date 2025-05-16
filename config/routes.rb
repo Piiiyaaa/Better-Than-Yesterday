@@ -17,6 +17,13 @@ Rails.application.routes.draw do
   # 他のユーザーのプロフィール
   resources :profiles, only: [ :show ]
 
+  resources :contacts, only: [:new, :create] do
+    collection do
+      post 'confirm'
+      post 'back'
+      get 'done'
+    end
+  end
 
   get "homes/top"
   root "home#top"

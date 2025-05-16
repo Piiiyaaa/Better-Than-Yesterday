@@ -53,6 +53,7 @@ end
 
 group :development do
   gem "web-console" # Dockerでbinding.pryなど使いたい場合は残してOK
+  gem 'dotenv-rails'
 end
 
 group :test do
