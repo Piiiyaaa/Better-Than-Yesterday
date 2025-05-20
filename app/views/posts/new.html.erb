@@ -58,10 +58,11 @@
       <div class="mt-8 mb-4">
         <h2 class="text-xl font-bold mb-4">今日の一問</h2>
 
-        <%= f.fields_for :daily_question do |question_form| %>
-          <div class="mb-4" data-controller="character-counter">
-            <%= question_form.label :body, class: "block mb-2" %>
-            <%= question_form.text_area :body,
+        <div data-controller="question-generator">
+          <%= f.fields_for :daily_question do |question_form| %>
+            <div class="mb-4" data-controller="character-counter">
+              <%= question_form.label :body, class: "block mb-2" %>
+              <%= question_form.text_area :body,
                   rows: 6,
                   class: "w-full p-2 border rounded",
                   placeholder: "次のうち、正しいのはどれ？\nA)○○\nB)○○\nC)○○",
