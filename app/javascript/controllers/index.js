@@ -16,5 +16,8 @@ application.register("hello", HelloController)
 import ImagePreviewController from "./image_preview_controller"
 application.register("image-preview", ImagePreviewController)
 
+import QuestionGeneratorController from "./question_generator_controller"
+application.register("question-generator", QuestionGeneratorController)
+
 import ToggleController from "./toggle_controller"
 application.register("toggle", ToggleController)

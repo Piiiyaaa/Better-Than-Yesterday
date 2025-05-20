@@ -16,7 +16,15 @@ Rails.application.routes.draw do
   resource :profile, only: [ :show, :edit, :update ]
   # 他のユーザーのプロフィール
   resources :profiles, only: [ :show ]
+  post 'ai_generate_question', to: 'ai#generate_question'
 
+  resources :contacts, only: [:new, :create] do
+    collection do
+      post 'confirm'
+      post 'back'
+      get 'done'
+    end
+  end
 
   get "homes/top"
   root "home#top"

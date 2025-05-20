@@ -2,9 +2,8 @@
   <div class="container mx-auto px-4">
     <div class="flex justify-center space-x-8">
         <%= link_to '利用規約', page_path('terms') %>
-        <p class="text-gray-600">お問い合わせ</p>
+        <%= link_to 'お問い合わせ', new_contact_path, class: "text-gray-600 hover:text-gray-900" %>
         <%= link_to 'プライバシーポリシー', page_path('policy') %>
-        <p class="text-gray-600"></p>
     </div>
   </div>
 </footer>
