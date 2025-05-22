@@ -9,7 +9,7 @@
 
     <h2 class="text-2xl font-bold mb-4"><%= @daily_question.post.title %></h2>
 
-    <div class="flex space-x-4">
+    <div class="flex space-x-4 mb-6">
       <%= link_to "この日の振り返りを見る", post_path(@daily_question.post), class: "px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-sm" %>
     </div>
     
@@ -20,19 +20,63 @@
       </div>
     </div>
 
+    <!-- メモ機能 -->
     <div class="mb-6">
-      <h3 class="text-lg font-semibold mb-2"><%= t('.question_answer') %></h3>
-      <textarea class="w-full p-3 border rounded-md" rows="4" placeholder="ここに解答を入力"></textarea>
+      <h3 class="text-lg font-semibold mb-2">メモ（任意）</h3>
+      <textarea class="w-full p-3 border rounded-md" rows="4" placeholder="ここに考えたことをメモできます"></textarea>
     </div>
 
-    <div data-controller="toggle">
+    <!-- 解答表示部分 -->
+    <div data-controller="toggle" class="mb-6">
       <button data-action="click->toggle#toggle" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
         解答を表示
       </button>
       <div data-toggle-target="content" class="hidden mt-4 p-4 bg-blue-50 rounded-md">
+        <h4 class="font-semibold text-blue-800 mb-2">正解:</h4>
         <p><%= @daily_question.question_answer %></p>
       </div>
     </div>
+
+    <!-- セルフチェック機能 -->
+    <% if user_signed_in? %>
+      <% if current_user.answered_question?(@daily_question) %>
+        <!-- 回答済みの場合 -->
+        <% user_answer = @daily_question.user_answer(current_user) %>
+        <div class="mb-6 text-center">
+          <div class="p-4 rounded-md <%= user_answer.is_correct ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200' %>">
+            <% if user_answer.is_correct %>
+              <span class="text-green-600 font-semibold text-lg">✅ 正解として記録されました！</span>
+            <% else %>
+              <span class="text-red-600 font-semibold text-lg">❌ 不正解として記録されました</span>
+            <% end %>
+            <p class="text-sm text-gray-600 mt-2">回答日: <%= user_answer.created_at.strftime('%Y/%m/%d') %></p>
+          </div>
+        </div>
+      <% else %>
+        <!-- 未回答の場合：セルフチェックボタン -->
+          <div class="space-x-4">
+            <%= form_with model: [@daily_question, Answer.new], local: true do |f| %>
+              <%= f.hidden_field :is_correct, value: true %>
+              <%= f.submit "正解", class: "bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition duration-200" %>
+            <% end %>
+            
+            <%= form_with model: [@daily_question, Answer.new], local: true do |f| %>
+              <%= f.hidden_field :is_correct, value: false %>
+              <%= f.submit "不正解", class: "bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition duration-200" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <!-- 未ログインの場合 -->
+      <div class="mb-6 text-center">
+        <div class="p-4 bg-gray-50 rounded-md">
+          <p class="text-gray-600 mb-3">結果を記録するにはログインが必要です</p>
+          <%= link_to "ログイン", new_user_session_path, 
+                      class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" %>
+        </div>
+      </div>
+    <% end %>
 
     <div class="mt-8 text-center">
       <%= link_to "一覧に戻る", daily_questions_path, class: "bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" %>

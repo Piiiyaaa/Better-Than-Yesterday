@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_16_034235) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_22_003607) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,6 +42,28 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_16_034235) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "answer_records", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "total_challenge"
+    t.integer "total_correct"
+    t.float "correct_rate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_answer_records_on_user_id"
+  end
+
+  create_table "answers", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "daily_question_id", null: false
+    t.text "answer_text"
+    t.boolean "is_correct"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["daily_question_id"], name: "index_answers_on_daily_question_id"
+    t.index ["user_id", "daily_question_id"], name: "index_answers_on_user_and_question", unique: true
+    t.index ["user_id"], name: "index_answers_on_user_id"
+  end
+
   create_table "contacts", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false
@@ -57,6 +79,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_16_034235) do
     t.bigint "post_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "question_type"
     t.index ["post_id"], name: "index_daily_questions_on_post_id"
   end
 
@@ -95,6 +118,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_16_034235) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "answer_records", "users"
+  add_foreign_key "answers", "daily_questions"
+  add_foreign_key "answers", "users"
   add_foreign_key "daily_questions", "posts"
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"

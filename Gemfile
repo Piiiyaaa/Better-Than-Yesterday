@@ -39,7 +39,7 @@ gem "net-imap", ">= 0.5.7"
 gem "nokogiri", ">= 1.18.8"
 gem "rack", ">= 3.1.14"
 gem "rack-session", ">= 2.1.1"
-gem 'high_voltage', '~> 3.1.2'
+gem "high_voltage", "~> 3.1.2"
 
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
@@ -53,7 +53,7 @@ end
 
 group :development do
   gem "web-console" # Dockerでbinding.pryなど使いたい場合は残してOK
-  gem 'dotenv-rails'
+  gem "dotenv-rails"
 end
 
 group :test do

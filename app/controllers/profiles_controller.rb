@@ -5,6 +5,7 @@ class ProfilesController < ApplicationController
   def show
     @user = params[:id] ? @user : current_user
     @posts = @user.posts.order(created_at: :desc)
+    @chart_data = prepare_chart_data(@user)
   end
 
   def edit
@@ -28,5 +29,14 @@ class ProfilesController < ApplicationController
 
   def user_params
     params.require(:user).permit(:username, :bio)
+  end
+
+  def prepare_chart_data(user)
+    daily_stats = user.daily_answer_stats
+
+    {
+      labels: daily_stats.map { |stat| stat[:date] },
+      data: daily_stats.map { |stat| stat[:correct_rate] }
+    }
   end
 end
