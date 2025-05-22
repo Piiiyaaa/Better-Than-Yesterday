@@ -26,20 +26,20 @@ class User < ApplicationRecord
   def answered_question?(daily_question)
     answers.exists?(daily_question: daily_question)
   end
-  
+
   def overall_correct_rate
     return 0.0 if answers.count == 0
     (answers.correct.count.to_f / answers.count * 100).round(2)
   end
-  
+
   def daily_answer_stats
     Answer.daily_stats_for_user(self, 10)
   end
-  
+
   def total_answers_count
     answers.count
   end
-  
+
   def total_correct_count
     answers.correct.count
   end
@@ -47,5 +47,4 @@ class User < ApplicationRecord
   def build_answer_record!
     create_answer_record!(total_challenge: 0, total_correct: 0, correct_rate: 0.0)
   end
-
 end
