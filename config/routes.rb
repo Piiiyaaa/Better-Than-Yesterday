@@ -12,7 +12,11 @@ Rails.application.routes.draw do
   resources :posts, only: %i[index new create show edit update destroy] do
     resource :like, only: [ :create, :destroy ]
   end
-  resources :daily_questions, only: [ :index, :show ]
+  
+  resources :daily_questions, only: [:index, :show] do
+    resources :answers, only: [:create]
+  end
+
   resource :profile, only: [ :show, :edit, :update ]
   # 他のユーザーのプロフィール
   resources :profiles, only: [ :show ]
