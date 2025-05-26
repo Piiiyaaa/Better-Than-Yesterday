@@ -1,0 +1,50 @@
+<%
+  # デフォルト値の設定
+  size ||= 40
+  classes ||= ""
+  show_name ||= false
+  clickable ||= false
+
+  # Symbolを数値に変換（セーフティ処理）
+  size = case size
+         when :sm then 40
+         when :lg then 64
+         when Integer then size
+         else 40
+         end
+%>
+
+<div class="flex items-center <%= 'space-x-2' if show_name %>">
+  <% avatar_wrapper_class = clickable ? "cursor-pointer hover:opacity-75 transition-opacity" : "" %>
+  
+  <div class="<%= avatar_wrapper_class %>">
+    <% if user.avatar.attached? %>
+      <%= image_tag user.avatar, 
+                  class: "rounded-full object-cover border border-gray-200 #{classes}", 
+                  style: "width: #{size}px; height: #{size}px;" %>
+    <% else %>
+      <div class="flex items-center justify-center bg-gray-200 text-gray-500 rounded-full <%= classes %>"
+           style="width: <%= size %>px; height: <%= size %>px;">
+        <% 
+          # サイズに応じたアイコンサイズの計算
+          icon_size = case size
+                      when 0..20 then size * 0.5
+                      when 21..30 then size * 0.6
+                      when 31..40 then size * 0.5
+                      when 41..60 then size * 0.5
+                      when 61..80 then size * 0.6
+                      when 81..100 then size * 0.6
+                      else size * 0.5
+                      end 
+        %>
+        <svg class="text-gray-400" width="<%= icon_size %>" height="<%= icon_size %>" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+        </svg>
+      </div>
+    <% end %>
+  </div>
+  
+  <% if show_name && user.username.present? %>
+    <span class="font-medium text-gray-800"><%= user.username %></span>
+  <% end %>
+</div>

@@ -35,7 +35,7 @@ class ProfilesController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:username, :bio)
+    params.require(:user).permit(:username, :bio, :avatar)
   end
 
   def prepare_chart_data(user)
