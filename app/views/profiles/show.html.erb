@@ -10,6 +10,37 @@
     </div>
   </div>
   
+  <!-- 学習統計グラフセクション -->
+  <% if @user.answers.any? %>
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <h2 class="text-lg font-semibold mb-4">成長グラフ</h2>
+      
+      <!-- 統計サマリー -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="text-center p-4 bg-blue-50 rounded-lg">
+          <div class="text-2xl font-bold text-blue-600"><%= @user.total_answers_count %></div>
+          <div class="text-sm text-gray-600">総回答数</div>
+        </div>
+        <div class="text-center p-4 bg-green-50 rounded-lg">
+          <div class="text-2xl font-bold text-green-600"><%= @user.total_correct_count %></div>
+          <div class="text-sm text-gray-600">正解数</div>
+        </div>
+        <div class="text-center p-4 bg-yellow-50 rounded-lg">
+          <div class="text-2xl font-bold text-yellow-600"><%= @user.overall_correct_rate %>%</div>
+          <div class="text-sm text-gray-600">正答率</div>
+        </div>
+      </div>
+      
+      <!-- グラフエリア -->
+      <div class="h-64" 
+           data-controller="chart"
+           data-chart-chart-labels-value="<%= @chart_data[:labels].to_json %>"
+           data-chart-chart-data-value="<%= @chart_data[:data].to_json %>">
+        <canvas data-chart-target="canvas" class="w-full h-full"></canvas>
+      </div>
+    </div>
+  <% end %>
+  
   <h2 class="text-lg font-semibold mb-4 pb-2"><%= t('.title')%></h2>
   
   <div class="grid gap-6">

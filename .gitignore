@@ -45,5 +45,5 @@
 .Spotlight-V100
 .Trashes
 
-/vendor/bundledocker-compose.override.yml
+/vendor/bundle
 docker-compose.override.yml
