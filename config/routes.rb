@@ -16,7 +16,10 @@ Rails.application.routes.draw do
     resources :answers, only: [ :create ]
   end
 
-  resource :profile, only: [ :show, :edit, :update ]
+  resource :profile, only: %i[show edit update], controller: 'profiles'
+  get 'profiles/:id', to: 'profiles#show', as: 'user_profile'
+  get 'profiles/:id/followings', to: 'profiles/followings#index', as: 'user_profile_followings'
+  get 'profiles/:id/followers', to: 'profiles/followers#index', as: 'user_profile_followers'
   
   resources :profiles, only: [:show] do
     member do
