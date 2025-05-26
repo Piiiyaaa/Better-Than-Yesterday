@@ -83,5 +83,4 @@ class User < ApplicationRecord
 
     username
   end
-
 end
