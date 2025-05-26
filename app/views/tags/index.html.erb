@@ -1,0 +1,25 @@
+<div class="container mx-auto p-6 max-w-4xl">
+  <h1 class="text-2xl font-bold mb-6">タグ一覧</h1>
+  
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <% if @tags.empty? %>
+      <p class="text-gray-500 text-center">タグはまだありません</p>
+    <% else %>
+      <div class="flex flex-wrap gap-3">
+        <% @tags.each do |tag| %>
+        <%= link_to tag_path(tag), class: "flex items-center gap-1.5 bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm px-3 py-1 rounded-full transition duration-150" do %>
+            <i class="fas fa-tag text-xs"></i>
+            <span><%= tag.name %></span>
+            <span class="ml-1.5 bg-blue-200 text-blue-800 text-xs rounded-full px-1.5 py-0.5">
+              <%= tag.posts.count %>
+            </span>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="mt-6">
+    <%= link_to "投稿一覧に戻る", posts_path, class: "text-blue-600 hover:text-blue-800" %>
+  </div>
+</div>

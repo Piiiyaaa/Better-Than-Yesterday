@@ -1,41 +1,59 @@
 <div class="container mx-auto p-6 max-w-4xl">
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold"><%= t('.title')%></h1>
+    <h1 class="text-2xl font-bold"><%= t('.title') %></h1>
     <% if user_signed_in? %>
       <%= link_to "新規投稿", new_post_path, class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm transition duration-150 ease-in-out" %>
     <% end %>
   </div>
 
-  <div class="grid gap-6">
-  <% @posts.each do |post| %>
-    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-150 ease-in-out">
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center space-x-4">
-          <%= render 'shared/user_avatar', user: post.user, size: :sm %>
-          <div class="text-gray-500">
-            <%= link_to post.user.username, user_profile_path(post.user), class: "hover:text-blue-600 hover:underline" %>
-            <span class="mx-2">•</span>
-            <%= l(post.learning_date, format: :short) %>
-          </div>
-        </div>
-        
-        <%= render 'like_button', post: post %>
-      </div>
-      
-      <h3 class="text-xl font-semibold mb-2">
-        <%= link_to post.title, post_path(post), class: "text-blue-600 hover:text-blue-800" %>
-      </h3>
-      
-      <div class="text-gray-700">
-        <p><%= truncate(post.body, length: 100) %></p>
-      </div>
-    </div>
-  <% end %>
-  
-  <% if @posts.empty? %>
-    <div class="bg-white rounded-lg shadow-md p-6 text-center">
-      <p class="text-gray-500">投稿がありません</p>
-    </div>
+  <div class="mb-6">
+  <%= link_to tags_path, class: "inline-flex items-center gap-2 bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium text-sm px-4 py-2 rounded-lg shadow-sm transition duration-150" do %>
+    <i class="fas fa-tags"></i>
+    <span>タグ一覧</span>
   <% end %>
 </div>
+
+
+  <div class="grid gap-6">
+    <% if @posts.empty? %>
+      <div class="bg-white rounded-lg shadow-md p-6 text-center">
+        <p class="text-gray-500">投稿がありません</p>
+      </div>
+    <% else %>
+      <% @posts.each do |post| %>
+        <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-150 ease-in-out">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-4">
+              <%= render 'shared/user_avatar', user: post.user, size: :sm %>
+              <div class="text-gray-500">
+                <%= link_to post.user.username, user_profile_path(post.user), class: "hover:text-blue-600 hover:underline" %>
+                <span class="mx-2">•</span>
+                <%= l(post.learning_date, format: :short) %>
+              </div>
+            </div>
+            <%= render 'like_button', post: post %>
+          </div>
+          
+          <h3 class="text-xl font-semibold mb-2">
+            <%= link_to post.title, post_path(post), class: "text-blue-600 hover:text-blue-800" %>
+          </h3>
+          
+          <div class="text-gray-700">
+            <p><%= truncate(post.body, length: 100) %></p>
+          </div>
+
+          <% if post.tags.present? %>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <% post.tags.each do |tag| %>
+                <%= link_to tag_path(tag), class: "flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full transition duration-150" do %>
+                  <i class="fas fa-tag text-[10px]"></i>
+                  <span><%= tag.name %></span>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
 </div>
