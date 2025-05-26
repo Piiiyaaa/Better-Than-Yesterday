@@ -1,49 +1,69 @@
 <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md my-6">
-<h1 class="text-2xl font-bold text-center mb-6">学びの振り返り詳細</h1>
+  <h1 class="text-2xl font-bold text-center mb-6">学びの振り返り詳細</h1>
 
-<!-- 投稿者情報とメタデータ -->
-<div class="flex justify-between items-center mb-4">
-  <div class="flex items-center">
-    <span class="font-semibold text-gray-800"><%= @post.user.username %></span>
-  </div>
-  <div class="text-sm text-gray-500">
-    <%= @post.learning_date %>
-  </div>
-    <%= render 'like_button', post: @post %>
-</div>
-
-<!-- 投稿タイトルと内容 -->
-<div class="bg-blue-50 p-4 rounded-lg mb-6">
-  <h2 class="text-xl font-bold text-gray-800 mb-2"><%= @post.title %></h2>
-  <div class="whitespace-pre-wrap text-gray-700"><%= @post.body %></div>
-</div>
-
-<% if @post.image.attached? %>
-  <div class="my-4">
-    <%= image_tag @post.image, class: "rounded-lg mx-auto" %>
-  </div>
-<% else %>
-<% end %>
-
-<!-- 今日の一問 -->
-<div class="mt-8">
-  <h3 class="text-lg font-bold mb-2">今日の一問</h3>
-  
-  <div class="bg-gray-50 p-4 rounded-lg mb-4">
-    <div class="whitespace-pre-wrap mb-4"><%= @daily_question.body %></div>
+  <!-- 投稿者情報とメタデータ -->
+  <div class="flex justify-between items-center mb-4">
+    <div class="flex items-center space-x-4">
+      <%= link_to @post.user.username, user_profile_path(@post.user), class: "hover:text-blue-600 hover:underline" %>
+      
+      <!-- フォローボタンを投稿者名の横に配置 -->
+      <% if user_signed_in? && current_user != @post.user %>
+        <div id="follow_button_<%= @post.user.id %>">
+          <% if current_user.following?(@post.user) %>
+            <%= button_to "フォロー解除", relationships_path(followed_id: @post.user.id),
+                method: :delete,
+                data: { turbo_method: :delete },
+                class: "bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 text-sm rounded",
+                id: "follow_button_#{@post.user.id}" %>
+          <% else %>
+            <%= button_to "フォローする", relationships_path(followed_id: @post.user.id),
+                method: :post,
+                data: { turbo_method: :post },
+                class: "bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 text-sm rounded",
+                id: "follow_button_#{@post.user.id}" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
     
-    <div class="mt-4 p-3 bg-white border border-gray-200 rounded-md">
-      <p class="font-semibold">解答:</p>
-      <div class="whitespace-pre-wrap"><%= @daily_question.question_answer %></div>
+    <div class="flex items-center space-x-4">
+      <div class="text-sm text-gray-500">
+        <%= @post.learning_date %>
+      </div>
+      <%= render 'like_button', post: @post %>
     </div>
   </div>
-</div>
+
+  <!-- 投稿タイトルと内容 -->
+  <div class="bg-blue-50 p-4 rounded-lg mb-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-2"><%= @post.title %></h2>
+    <div class="whitespace-pre-wrap text-gray-700"><%= @post.body %></div>
+  </div>
+
+  <% if @post.image.attached? %>
+    <div class="my-4">
+      <%= image_tag @post.image, class: "rounded-lg mx-auto" %>
+    </div>
+  <% end %>
+
+  <!-- 今日の一問 -->
+  <div class="mt-8">
+    <h3 class="text-lg font-bold mb-2">今日の一問</h3>
+    
+    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+      <div class="whitespace-pre-wrap mb-4"><%= @daily_question.body %></div>
+      
+      <div class="mt-4 p-3 bg-white border border-gray-200 rounded-md">
+        <p class="font-semibold">解答:</p>
+        <div class="whitespace-pre-wrap"><%= @daily_question.question_answer %></div>
+      </div>
+    </div>
+  </div>
 
   <% if user_signed_in? && current_user == @post.user %>
-  <div class="flex space-x-4">
-    <%= link_to '編集', edit_post_path(@post), class: "px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-sm" %>
-    <%= button_to '削除', post_path(@post), method: :delete, form: { data: { turbo_confirm: '本当に削除しますか？' } }, class: "px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-sm" %>
-  </div>
+    <div class="flex space-x-4">
+      <%= link_to '編集', edit_post_path(@post), class: "px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-sm" %>
+      <%= button_to '削除', post_path(@post), method: :delete, form: { data: { turbo_confirm: '本当に削除しますか？' } }, class: "px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-sm" %>
+    </div>
   <% end %>
-</div>
 </div>

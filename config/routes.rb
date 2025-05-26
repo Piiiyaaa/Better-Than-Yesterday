@@ -1,29 +1,32 @@
 Rails.application.routes.draw do
-  get "likes/create"
-  get "likes/destroy"
-  get "profiles/show"
-  get "profiles/edit"
-  get "profiles/update"
-  get "daily_questions/show"
   devise_for :users, controllers: {
     omniauth_callbacks: "users/omniauth_callbacks",
     sessions: "users/sessions",
     registrations: "users/registrations"
   }
+
   resources :posts, only: %i[index new create show edit update destroy] do
     resource :like, only: [ :create, :destroy ]
   end
 
-  resources :relationships, only: [ :create, :destroy ]
+  resources :relationships, only: [ :create ]
   delete "relationships", to: "relationships#destroy"
 
   resources :daily_questions, only: [ :index, :show ] do
     resources :answers, only: [ :create ]
   end
 
-  resource :profile, only: [ :show, :edit, :update ]
-  # 他のユーザーのプロフィール
-  resources :profiles, only: [ :show ]
+  resource :profile, only: %i[show edit update], controller: "profiles"
+  get "profiles/:id", to: "profiles#show", as: "user_profile"
+  get "profiles/:id/followings", to: "profiles/followings#index", as: "user_profile_followings"
+  get "profiles/:id/followers", to: "profiles/followers#index", as: "user_profile_followers"
+
+  resources :profiles, only: [ :show ] do
+    member do
+      get :followings, to: "profiles/followings#index"
+      get :followers, to: "profiles/followers#index"
+    end
+  end
   post "ai_generate_question", to: "ai#generate_question"
 
   resources :contacts, only: [ :new, :create ] do
@@ -34,7 +37,6 @@ Rails.application.routes.draw do
     end
   end
 
-  get "homes/top"
   root "home#top"
 
   get "up" => "rails/health#show", as: :rails_health_check
