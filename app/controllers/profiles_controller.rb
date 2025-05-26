@@ -3,9 +3,16 @@ class ProfilesController < ApplicationController
   before_action :set_user, only: [ :show ]
 
   def show
-    @user = params[:id] ? @user : current_user
+    if params[:id]
+      @user = User.find(params[:id])
+    else
+      @user = current_user
+    end
+    
     @posts = @user.posts.order(created_at: :desc)
-    @chart_data = prepare_chart_data(@user)
+    
+    # グラフデータは回答がある場合のみ準備
+    @chart_data = @user.answers.any? ? prepare_chart_data(@user) : { labels: [], data: [] }
   end
 
   def edit
