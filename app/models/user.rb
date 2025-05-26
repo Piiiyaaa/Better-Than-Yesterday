@@ -12,15 +12,15 @@ class User < ApplicationRecord
   has_many :answers, dependent: :destroy
   has_one :answer_record, dependent: :destroy
 
-  has_many :active_relationships, 
-    class_name: 'Relationship',
-    foreign_key: 'follower_id',
+  has_many :active_relationships,
+    class_name: "Relationship",
+    foreign_key: "follower_id",
     dependent: :destroy
-  has_many :passive_relationships, 
+  has_many :passive_relationships,
     class_name: "Relationship",
     foreign_key: "followed_id",
     dependent: :destroy
-  
+
   has_many :following, through: :active_relationships, source: :followed
   has_many :followers, through: :passive_relationships, source: :follower
 
@@ -78,7 +78,7 @@ class User < ApplicationRecord
 
   def unfollow(other_user)
     relationship = active_relationships.find_by(followed_id: other_user.id)
-    relationship&.destroy 
+    relationship&.destroy
   end
 
   # 現在のユーザーがフォローしてたらtrueを返す
@@ -93,9 +93,9 @@ class User < ApplicationRecord
     base_username = if name.present?
                       # 日本語名の場合は姓名を結合、英語名の場合は最初の名前を使用
                       name.gsub(/\s+/, "").slice(0, 8)
-                    else
+    else
                       email.split("@").first.slice(0, 8)
-                    end
+    end
 
     username = base_username
     counter = 1
