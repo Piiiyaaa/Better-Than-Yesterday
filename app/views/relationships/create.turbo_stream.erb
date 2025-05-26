@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "follow_button_#{@user.id}" do %>
+  <%= button_to "フォロー解除", relationships_path(followed_id: @user.id),
+      method: :delete,
+      data: { turbo_method: :delete },
+      class: "bg-gray-500 hover:bg-gray-600 text-white py-1 px-2 text-sm rounded",
+      id: "follow_button_#{@user.id}" %>
+<% end %>

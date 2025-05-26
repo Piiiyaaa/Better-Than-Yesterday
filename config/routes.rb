@@ -14,6 +14,9 @@ Rails.application.routes.draw do
     resource :like, only: [ :create, :destroy ]
   end
 
+  resources :relationships, only: [ :create, :destroy ]
+  delete "relationships", to: "relationships#destroy"
+
   resources :daily_questions, only: [ :index, :show ] do
     resources :answers, only: [ :create ]
   end

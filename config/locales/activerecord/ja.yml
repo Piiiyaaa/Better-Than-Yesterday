@@ -29,3 +29,4 @@ ja:
       invalid: は不正な値です
       not_a_number: は数値で入力してください
       unauthorized_edit_post: 他のユーザーの投稿は編集できません。
+      not_self_follow: 自分自身をフォローすることはできません
