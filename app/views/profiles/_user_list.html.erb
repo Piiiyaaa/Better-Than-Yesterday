@@ -3,7 +3,7 @@
     <% users.each do |user| %>
       <div class="border-b pb-4 flex justify-between items-center">
         <div>
-          <%= link_to user.username, profile_path(user), class: "font-medium text-blue-600 hover:text-blue-800" %>
+          <%= link_to user.username, user_profile_path(user), class: "font-medium text-blue-600 hover:text-blue-800 hover:underline" %>
           <% if user.respond_to?(:bio) && user.bio.present? %>
             <p class="text-gray-600 text-sm"><%= user.bio.truncate(100) %></p>
           <% end %>
