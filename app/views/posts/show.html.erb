@@ -1,3 +1,12 @@
+<% content_for :title, @post.title %>
+<% content_for :og_type, "article" %>
+<% content_for :og_title, "#{@post.title} - #{@post.user.username}の学習記録" %>
+<% content_for :og_description, truncate(@post.body, length: 100) %>
+<% content_for :og_url, post_url(@post) %>
+<% if @post.image.attached? %>
+  <% content_for :og_image, url_for(@post.image) %>
+<% end %>
+
 <div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md my-6">
   <h1 class="text-2xl font-bold text-center mb-6">学びの振り返り詳細</h1>
 
@@ -60,6 +69,21 @@
       </div>
     </div>
   </div>
+
+  <div class="mt-6 text-center">
+  <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape("#{@post.title} - #{@post.user.username}の学習記録")}&url=#{CGI.escape(post_url(@post))}&hashtags=BetterThanYesterday,学習記録",
+      target: "_blank",
+      rel: "noopener noreferrer",
+      class: "inline-flex items-center justify-center gap-2 px-5 py-2 bg-black hover:bg-gray-800 text-white font-semibold rounded-full shadow-md transition-transform duration-200 hover:scale-105" do %>
+    
+    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    </svg>
+
+    <span>この投稿をシェア</span>
+  <% end %>
+</div>
+
 
   <% if user_signed_in? && current_user == @post.user %>
     <div class="flex space-x-4">
