@@ -3,7 +3,8 @@ class User < ApplicationRecord
 
   validates :username, presence: true, length: { maximum: 10 }
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable,
+         :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
   has_many :posts, dependent: :destroy
   has_many :likes, dependent: :destroy
@@ -47,4 +48,40 @@ class User < ApplicationRecord
   def build_answer_record!
     create_answer_record!(total_challenge: 0, total_correct: 0, correct_rate: 0.0)
   end
+
+  def self.from_omniauth(auth)
+    where(email: auth.info.email).first_or_create do |user|
+      user.email = auth.info.email
+      user.username = generate_username_from_google_name(auth.info.name, auth.info.email)
+      user.password = Devise.friendly_token[0, 20]
+      user.provider = auth.provider
+      user.uid = auth.uid
+    end
+  end
+
+  private
+
+  def self.generate_username_from_google_name(name, email)
+    # Googleの名前から10文字以内のユーザー名を生成
+    base_username = if name.present?
+                      # 日本語名の場合は姓名を結合、英語名の場合は最初の名前を使用
+                      name.gsub(/\s+/, "").slice(0, 8)
+    else
+                      email.split("@").first.slice(0, 8)
+    end
+
+    username = base_username
+    counter = 1
+
+    # 重複チェック（10文字制限内で）
+    while User.exists?(username: username)
+      suffix = counter.to_s
+      max_base_length = 10 - suffix.length
+      username = "#{base_username.slice(0, max_base_length)}#{suffix}"
+      counter += 1
+    end
+
+    username
+  end
+
 end

@@ -6,8 +6,9 @@ Rails.application.routes.draw do
   get "profiles/update"
   get "daily_questions/show"
   devise_for :users, controllers: {
-    registrations: "users/registrations",
-    sessions: "users/sessions"
+    omniauth_callbacks: "users/omniauth_callbacks",
+    sessions: "users/sessions",
+    registrations: "users/registrations"
   }
   resources :posts, only: %i[index new create show edit update destroy] do
     resource :like, only: [ :create, :destroy ]

@@ -46,3 +46,4 @@
 .Trashes
 
 /vendor/bundle
+docker-compose.override.yml
