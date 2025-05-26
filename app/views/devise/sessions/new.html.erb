@@ -18,6 +18,10 @@
     </div>
   <% end %>
 
+    <div class="mt-6">
+      <%= render "devise/shared/links" %>
+    </div>
+
   <div class="text-center mt-4 mb-4">
     <%= link_to t('.to_sign_up'), new_registration_path(resource_name), class: "text-sm text-gray-700 hover:text-sky-700" %>
   </div>
