@@ -4,7 +4,8 @@ class PostsController < ApplicationController
     before_action :check_post_owner, only: [ :edit, :update, :destroy ]
 
     def index
-        @posts = Post.includes(:user)
+        @posts = Post.includes(:user, :tags).order(learning_date: :desc, created_at: :desc)
+        @tags = Tag.all.order(name: :asc)
     end
 
     def new
@@ -52,7 +53,7 @@ class PostsController < ApplicationController
     end
 
     def post_params
-        params.require(:post).permit(:title, :body, :learning_date, :image,
+        params.require(:post).permit(:title, :body, :learning_date, :image, :tag_names,
         daily_question_attributes: [ :body, :question_answer ])
     end
 

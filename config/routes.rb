@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   get "profiles/:id/followings", to: "profiles/followings#index", as: "user_profile_followings"
   get "profiles/:id/followers", to: "profiles/followers#index", as: "user_profile_followers"
 
+  resources :tags, only: [ :index, :show ]
+
   resources :profiles, only: [ :show ] do
     member do
       get :followings, to: "profiles/followings#index"

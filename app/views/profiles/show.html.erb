@@ -66,6 +66,15 @@
           <div class="text-gray-700">
             <p><%= post.body.truncate(100) %></p>
           </div>
+
+          <div class="flex flex-wrap gap-2 mt-3">
+            <% post.tags.each do |tag| %>
+              <%= link_to tag_path(tag), class: "inline-flex items-center bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full transition duration-150" do %>
+                <i class="fas fa-tag text-[10px] mr-1"></i>
+                <%= tag.name %>
+              <% end %>
+            <% end %>
+          </div>
         </div>
       <% end %>
     <% else %>
