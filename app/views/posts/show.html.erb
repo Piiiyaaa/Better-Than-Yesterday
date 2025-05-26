@@ -4,6 +4,7 @@
   <!-- 投稿者情報とメタデータ -->
   <div class="flex justify-between items-center mb-4">
     <div class="flex items-center space-x-4">
+      <%= render 'shared/user_avatar', user: @post.user, size: :sm %>
       <%= link_to @post.user.username, user_profile_path(@post.user), class: "hover:text-blue-600 hover:underline" %>
       
       <!-- フォローボタンを投稿者名の横に配置 -->

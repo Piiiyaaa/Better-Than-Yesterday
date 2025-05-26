@@ -12,6 +12,9 @@ class User < ApplicationRecord
   has_many :answers, dependent: :destroy
   has_one :answer_record, dependent: :destroy
 
+  has_one_attached :avatar
+  validate :avatar_format, if: -> { avatar.attached? }
+
   has_many :active_relationships,
     class_name: "Relationship",
     foreign_key: "follower_id",
@@ -109,5 +112,17 @@ class User < ApplicationRecord
     end
 
     username
+  end
+
+  def avatar_format
+    return unless avatar.attached?
+
+    unless avatar.content_type.in?(%w[image/jpeg image/png image/gif])
+      errors.add(:avatar, "対応していないファイル形式です。JPEG、PNG、GIFのみ対応しています。")
+    end
+
+    if avatar.blob.byte_size > 5.megabytes
+      errors.add(:avatar, "ファイルサイズは5MB以下にしてください。")
+    end
   end
 end

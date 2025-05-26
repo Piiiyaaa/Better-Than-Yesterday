@@ -2,11 +2,15 @@
   <% if users.any? %>
     <% users.each do |user| %>
       <div class="border-b pb-4 flex justify-between items-center">
-        <div>
-          <%= link_to user.username, user_profile_path(user), class: "font-medium text-blue-600 hover:text-blue-800 hover:underline" %>
-          <% if user.respond_to?(:bio) && user.bio.present? %>
-            <p class="text-gray-600 text-sm"><%= user.bio.truncate(100) %></p>
-          <% end %>
+        <div class="flex items-center space-x-3">
+          <%= render 'shared/user_avatar', user: user, size: :md %>
+          
+          <div>
+            <%= link_to user.username, user_profile_path(user), class: "font-medium text-blue-600 hover:text-blue-800 hover:underline" %>
+            <% if user.respond_to?(:bio) && user.bio.present? %>
+              <p class="text-gray-600 text-sm"><%= user.bio.truncate(100) %></p>
+            <% end %>
+          </div>
         </div>
         
         <% if current_user && current_user != user %>

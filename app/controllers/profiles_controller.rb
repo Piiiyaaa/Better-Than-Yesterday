@@ -8,9 +8,9 @@ class ProfilesController < ApplicationController
     else
       @user = current_user
     end
-    
+
     @posts = @user.posts.order(created_at: :desc)
-    
+
     # グラフデータは回答がある場合のみ準備
     @chart_data = @user.answers.any? ? prepare_chart_data(@user) : { labels: [], data: [] }
   end
@@ -35,7 +35,7 @@ class ProfilesController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:username, :bio)
+    params.require(:user).permit(:username, :bio, :avatar)
   end
 
   def prepare_chart_data(user)
