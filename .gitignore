@@ -40,4 +40,10 @@
 /node_modules
 
 .DS_Store
-/vendor/bundle
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+/vendor/bundledocker-compose.override.yml
+docker-compose.override.yml
