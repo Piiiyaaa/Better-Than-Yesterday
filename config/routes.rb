@@ -19,10 +19,11 @@ Rails.application.routes.draw do
   resource :profile, only: [ :show, :edit, :update ]
   
   resources :profiles, only: [:show] do
-    resources :followings, only: [:index], controller: 'profiles/followings'
-    resources :followers, only: [:index], controller: 'profiles/followers'
+    member do
+      get :followings, to: 'profiles/followings#index'
+      get :followers, to: 'profiles/followers#index'
+    end
   end
-
   post "ai_generate_question", to: "ai#generate_question"
 
   resources :contacts, only: [ :new, :create ] do

@@ -1,12 +1,12 @@
 <div class="flex mt-4 space-x-6 text-center">
   <div>
-    <%= link_to profile_followings_path(@user), class: "text-gray-700 hover:text-blue-600" do %>
+    <%= link_to followings_profile_path(@user), class: "text-gray-700 hover:text-blue-600" do %>
       <div class="font-bold"><%= @user.following.count %></div>
       <div class="text-sm">フォロー中</div>
     <% end %>
   </div>
   <div>
-    <%= link_to profile_followers_path(@user), class: "text-gray-700 hover:text-blue-600" do %>
+    <%= link_to followers_profile_path(@user), class: "text-gray-700 hover:text-blue-600" do %>
       <div class="font-bold"><%= @user.followers.count %></div>
       <div class="text-sm">フォロワー</div>
     <% end %>
