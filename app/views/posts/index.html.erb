@@ -10,12 +10,34 @@
   <% @posts.each do |post| %>
     <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-150 ease-in-out">
       <div class="flex items-center justify-between mb-4">
-        <div class="text-gray-500">
-          <%= post.user.username %>
-          <span class="mx-2">•</span>
-          <%= l(post.learning_date, format: :short) %>
+        <div class="flex items-center space-x-4">
+          <div class="text-gray-500">
+            <%= post.user.username %>
+            <span class="mx-2">•</span>
+            <%= l(post.learning_date, format: :short) %>
+          </div>
+          
+          <!-- フォローボタン（ログインユーザーと投稿者が異なる場合のみ表示） -->
+          <% if user_signed_in? && current_user != post.user %>
+            <div id="follow_button_<%= post.user.id %>">
+              <% if current_user.following?(post.user) %>
+                <%= button_to "フォロー解除", relationships_path(followed_id: post.user.id),
+                    method: :delete,
+                    data: { turbo_method: :delete },
+                    class: "bg-gray-500 hover:bg-gray-600 text-white py-1 px-2 text-sm rounded",
+                    id: "follow_button_#{post.user.id}" %>
+              <% else %>
+                <%= button_to "フォローする", relationships_path(followed_id: post.user.id),
+                    method: :post,
+                    data: { turbo_method: :post },
+                    class: "bg-blue-500 hover:bg-blue-600 text-white py-1 px-2 text-sm rounded",
+                    id: "follow_button_#{post.user.id}" %>
+              <% end %>
+            </div>
+          <% end %>
         </div>
-            <%= render 'like_button', post: post %>
+        
+        <%= render 'like_button', post: post %>
       </div>
       
       <h3 class="text-xl font-semibold mb-2">

@@ -24,13 +24,12 @@ class PostsController < ApplicationController
 
     def show
         @daily_question = @post.daily_question
+        @user = @post.user  # 投稿の作者を @user に設定
     end
-
 
     def edit
         @daily_question = @post.daily_question
     end
-
 
     def update
         if @post.update(post_params)
