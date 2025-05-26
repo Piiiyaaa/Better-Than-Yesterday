@@ -6,23 +6,28 @@ Rails.application.routes.draw do
   get "profiles/update"
   get "daily_questions/show"
   devise_for :users, controllers: {
-    registrations: "users/registrations",
-    sessions: "users/sessions"
+    omniauth_callbacks: "users/omniauth_callbacks",
+    sessions: "users/sessions",
+    registrations: "users/registrations"
   }
   resources :posts, only: %i[index new create show edit update destroy] do
     resource :like, only: [ :create, :destroy ]
   end
-  resources :daily_questions, only: [ :index, :show ]
+
+  resources :daily_questions, only: [ :index, :show ] do
+    resources :answers, only: [ :create ]
+  end
+
   resource :profile, only: [ :show, :edit, :update ]
   # 他のユーザーのプロフィール
   resources :profiles, only: [ :show ]
-  post 'ai_generate_question', to: 'ai#generate_question'
+  post "ai_generate_question", to: "ai#generate_question"
 
-  resources :contacts, only: [:new, :create] do
+  resources :contacts, only: [ :new, :create ] do
     collection do
-      post 'confirm'
-      post 'back'
-      get 'done'
+      post "confirm"
+      post "back"
+      get "done"
     end
   end
 

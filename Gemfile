@@ -26,6 +26,9 @@ gem "rails-i18n", "~> 7.0.0"
 gem "devise-i18n"
 gem "devise-i18n-views"
 gem "aws-sdk-s3", require: false
+gem "omniauth"
+gem "omniauth-google-oauth2"
+gem "omniauth-rails_csrf_protection"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -39,7 +42,7 @@ gem "net-imap", ">= 0.5.7"
 gem "nokogiri", ">= 1.18.8"
 gem "rack", ">= 3.1.14"
 gem "rack-session", ">= 2.1.1"
-gem 'high_voltage', '~> 3.1.2'
+gem "high_voltage", "~> 3.1.2"
 
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
@@ -53,7 +56,7 @@ end
 
 group :development do
   gem "web-console" # Dockerでbinding.pryなど使いたい場合は残してOK
-  gem 'dotenv-rails'
+  gem "dotenv-rails"
 end
 
 group :test do
