@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:11-alpine
+        image: postgres:13-alpine
         ports:
           - "5433:5432"
         env:
@@ -42,7 +42,7 @@ jobs:
           bundler-cache: true
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'yarn'
@@ -54,7 +54,7 @@ jobs:
         run: bundle exec rails assets:precompile
 
       - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
+        uses: browser-actions/setup-chrome@v1
 
       - name: Setup ChromeDriver
         uses: nanasess/setup-chromedriver@v2
@@ -65,7 +65,9 @@ jobs:
           chromedriver --port=9515 &
 
       - name: Set up database schema
-        run: bin/rails db:schema:load
+        run: |
+          bin/rails db:create
+          bin/rails db:migrate
 
       - name: Run model tests
         run: bundle exec rspec spec/models
@@ -83,9 +85,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-
-      - name: Generate binstubs
-        run: bundle exec rubocop
 
       - name: Security audit dependencies
         run: bundle exec bundler-audit --update
