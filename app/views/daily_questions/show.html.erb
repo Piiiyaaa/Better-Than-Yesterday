@@ -1,85 +1,90 @@
 <div class="max-w-2xl mx-auto my-8 px-4">
-  <div class="bg-white rounded-lg shadow p-6">
-    <div class="flex items-center mb-4">
+  <div class="bg-white rounded-xl shadow-lg p-8 space-y-6 text-gray-800">
+
+    <!-- ユーザー情報 -->
+    <div class="flex items-center justify-between">
       <div>
-        <p class="text-gray-700"><%= @daily_question.post.user.username %></p>
-        <p class="text-xs text-gray-500"><%= @daily_question.post.learning_date %></p>
+        <p class="font-semibold"><%= @daily_question.post.user.username %></p>
+        <p class="text-sm text-gray-500"><%= @daily_question.post.learning_date %></p>
       </div>
     </div>
 
-    <h2 class="text-2xl font-bold mb-4"><%= @daily_question.post.title %></h2>
+    <!-- タイトル -->
+    <h2 class="text-3xl font-bold text-black-600"><%= @daily_question.post.title %></h2>
 
-    <div class="flex space-x-4 mb-6">
-      <%= link_to "この日の振り返りを見る", post_path(@daily_question.post), class: "px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-sm" %>
+    <!-- リンクボタン -->
+    <div>
+      <%= link_to "この日の振り返りを見る", post_path(@daily_question.post),
+        class: "inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl shadow transition" %>
     </div>
-    
-    <div class="mb-6">
-      <h3 class="text-lg font-semibold mb-2"><%= t('.question') %></h3>
-      <div class="p-4 bg-gray-50 rounded-md">
+
+    <!-- 質問 -->
+    <div>
+      <h3 class="text-lg font-semibold text-gray-700"><%= t('.question') %></h3>
+      <div class="p-4 bg-sky-50 rounded-xl shadow-inner">
         <p><%= @daily_question.body %></p>
       </div>
     </div>
 
-    <!-- メモ機能 -->
-    <div class="mb-6">
-      <h3 class="text-lg font-semibold mb-2">メモ（任意）</h3>
-      <textarea class="w-full p-3 border rounded-md" rows="4" placeholder="ここに考えたことをメモできます"></textarea>
+    <!-- メモ -->
+    <div>
+      <h3 class="text-lg font-semibold text-gray-700">メモ（任意）</h3>
+      <textarea class="w-full p-4 border border-gray-300 rounded-xl shadow-sm" rows="4" placeholder="ここに考えたことをメモできます"></textarea>
     </div>
 
-    <!-- 解答表示部分 -->
-    <div data-controller="toggle" class="mb-6">
-      <button data-action="click->toggle#toggle" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+    <!-- 解答表示 -->
+    <div data-controller="toggle">
+      <button data-action="click->toggle#toggle" class="bg-sky-500 text-white px-5 py-2 rounded-xl shadow hover:bg-sky-600 transition">
         解答を表示
       </button>
-      <div data-toggle-target="content" class="hidden mt-4 p-4 bg-blue-50 rounded-md">
-        <h4 class="font-semibold text-blue-800 mb-2">正解:</h4>
+      <div data-toggle-target="content" class="hidden mt-4 p-4 bg-sky-100 rounded-xl shadow-inner">
+        <h4 class="font-semibold text-sky-800 mb-2">正解:</h4>
         <p><%= @daily_question.question_answer %></p>
       </div>
     </div>
 
-    <!-- セルフチェック機能 -->
+    <!-- 回答済み or 回答フォーム -->
     <% if user_signed_in? %>
       <% if current_user.answered_question?(@daily_question) %>
-        <!-- 回答済みの場合 -->
         <% user_answer = @daily_question.user_answer(current_user) %>
-        <div class="mb-6 text-center">
-          <div class="p-4 rounded-md <%= user_answer.is_correct ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200' %>">
+        <div class="text-center">
+          <div class="p-4 rounded-xl border 
+            <%= user_answer.is_correct ? 'bg-sky-50 border-sky-300' : 'bg-orange-50 border-orange-300' %> shadow">
             <% if user_answer.is_correct %>
-              <span class="text-green-600 font-semibold text-lg">✅ 正解として記録されました！</span>
+              <p class="text-sky-700 font-semibold text-lg">✅ 正解として記録されました！</p>
             <% else %>
-              <span class="text-red-600 font-semibold text-lg">❌ 不正解として記録されました</span>
+              <p class="text-orange-700 font-semibold text-lg">❌ 不正解として記録されました</p>
             <% end %>
-            <p class="text-sm text-gray-600 mt-2">回答日: <%= user_answer.created_at.strftime('%Y/%m/%d') %></p>
+            <p class="text-sm text-gray-500 mt-2">回答日: <%= user_answer.created_at.strftime('%Y/%m/%d') %></p>
           </div>
         </div>
       <% else %>
-        <!-- 未回答の場合：セルフチェックボタン -->
-          <div class="space-x-4">
-            <%= form_with model: [@daily_question, Answer.new], local: true do |f| %>
-              <%= f.hidden_field :is_correct, value: true %>
-              <%= f.submit "正解", class: "bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition duration-200" %>
-            <% end %>
-            
-            <%= form_with model: [@daily_question, Answer.new], local: true do |f| %>
-              <%= f.hidden_field :is_correct, value: false %>
-              <%= f.submit "不正解", class: "bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition duration-200" %>
-            <% end %>
-          </div>
+        <div class="flex justify-center gap-6">
+          <%= form_with model: [@daily_question, Answer.new], local: true do |f| %>
+            <%= f.hidden_field :is_correct, value: true %>
+            <%= f.submit "正解", class: "bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-xl shadow font-medium transition" %>
+          <% end %>
+
+          <%= form_with model: [@daily_question, Answer.new], local: true do |f| %>
+            <%= f.hidden_field :is_correct, value: false %>
+            <%= f.submit "不正解", class: "bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl shadow font-medium transition" %>
+          <% end %>
         </div>
       <% end %>
     <% else %>
-      <!-- 未ログインの場合 -->
-      <div class="mb-6 text-center">
-        <div class="p-4 bg-gray-50 rounded-md">
+      <div class="text-center">
+        <div class="p-4 bg-gray-50 rounded-xl shadow">
           <p class="text-gray-600 mb-3">結果を記録するにはログインが必要です</p>
-          <%= link_to "ログイン", new_user_session_path, 
-                      class: "bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" %>
+          <%= link_to "ログイン", new_user_session_path,
+            class: "bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl shadow transition" %>
         </div>
       </div>
     <% end %>
 
-    <div class="mt-8 text-center">
-      <%= link_to "一覧に戻る", daily_questions_path, class: "bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" %>
+    <!-- 戻るボタン -->
+    <div class="text-center">
+      <%= link_to "一覧に戻る", daily_questions_path,
+        class: "bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-xl shadow transition" %>
     </div>
   </div>
 </div>
