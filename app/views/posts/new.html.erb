@@ -7,18 +7,19 @@
     <%= form_with(model: @post, local: true, class: "space-y-4") do |f| %>
       <div>
         <%= f.label :learning_date, class: 'block text-sm font-medium text-gray-700' %>
-        <%= f.date_field :learning_date, value: Date.today, class: 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500' %>
+        <%= f.date_field :learning_date, value: Date.today,
+          class: 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500' %>
       </div>
 
       <div data-controller="character-counter">
         <%= f.label :title, class: 'block text-sm font-medium text-gray-700' %>
         <%= f.text_field :title,
-              class: 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500',
-              maxlength: 20,
-              data: {
-                character_counter_target: "field",
-                action: "input->character-counter#updateCounter"
-              } %>
+          class: 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500',
+          maxlength: 20,
+          data: {
+            character_counter_target: "field",
+            action: "input->character-counter#updateCounter"
+          } %>
         <div class="text-right text-xs text-gray-500 mt-1">
           <span data-character-counter-target="counter"><%= @post.title ? @post.title.length : 0 %></span>/20字
         </div>
@@ -27,13 +28,13 @@
       <div data-controller="character-counter">
         <%= f.label :body, class: 'block text-sm font-medium text-gray-700' %>
         <%= f.text_area :body,
-              class: 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500',
-              rows: '10',
-              maxlength: 400,
-              data: {
-                character_counter_target: "field",
-                action: "input->character-counter#updateCounter"
-              } %>
+          class: 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500',
+          rows: 10,
+          maxlength: 400,
+          data: {
+            character_counter_target: "field",
+            action: "input->character-counter#updateCounter"
+          } %>
         <div class="text-right text-xs text-gray-500 mt-1">
           <span data-character-counter-target="counter"><%= @post.body ? @post.body.length : 0 %></span>/400字
         </div>
@@ -41,15 +42,14 @@
 
       <div data-controller="character-counter">
         <%= f.label :tag_names, "タグ（カンマ区切り）", class: 'block text-sm font-medium text-gray-700' %>
-        <%= f.text_field :tag_names, 
-              value: @post.tag_names,
-              class: 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500',
-              placeholder: "Rails,プログラミング,学習記録",
-              data: {
-                character_counter_target: "field",
-                action: "input->character-counter#updateCounter"
-              }
-        %>
+        <%= f.text_field :tag_names,
+          value: @post.tag_names,
+          class: 'mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500',
+          placeholder: "Rails,プログラミング,学習記録",
+          data: {
+            character_counter_target: "field",
+            action: "input->character-counter#updateCounter"
+          } %>
         <div class="text-xs text-gray-500 mt-1">
           <div class="text-right">
             <span data-character-counter-target="counter"><%= @post.tag_names ? @post.tag_names.length : 0 %></span>字
@@ -60,9 +60,9 @@
       <div class="mb-4" data-controller="image-preview">
         <%= f.label :image, "画像", class: "block text-gray-700 text-sm font-bold mb-2" %>
         <%= f.file_field :image,
-              class: "w-full",
-              accept: "image/jpeg,image/png,image",
-              data: { image_preview_target: "input", action: "change->image-preview#previewImage" } %>
+          class: "w-full",
+          accept: "image/jpeg,image/png,image",
+          data: { image_preview_target: "input", action: "change->image-preview#previewImage" } %>
 
         <% if f.object.image.attached? %>
           <div class="mt-2" data-image-preview-target="preview">
@@ -76,49 +76,75 @@
       <div class="mt-8 mb-4">
         <h2 class="text-xl font-bold mb-4">今日の一問</h2>
 
-        <div data-controller="question-generator">
+        <div data-controller="question-generator question-type-switcher">
           <%= f.fields_for :daily_question do |question_form| %>
+            <!-- 問題タイプ選択 -->
+            <div class="mb-6 max-w-xs">
+              <%= question_form.label :question_type, "問題タイプ", class: "block text-sm font-medium text-gray-700 mb-2" %>
+              <%= question_form.select :question_type,
+                options_for_select([
+                  ['記述式', 'description'],
+                  ['選択式', 'multiple_choice'],
+                  ['穴埋め式', 'fill_in_blank']
+                ], @post.daily_question&.question_type || 'description'),
+                {},
+                {
+                  class: "w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white",
+                  data: {
+                    question_type_switcher_target: "selector",
+                    action: "change->question-type-switcher#switchTemplate"
+                  }
+                } %>
+            </div>
+
+            <!-- テンプレート表示エリア -->
+            <div data-question-type-switcher-target="template" class="mb-4 p-3 bg-gray-50 border rounded-md text-sm text-gray-600">
+              <!-- JavaScript で動的に更新される -->
+            </div>
+
+            <!-- 問題文 -->
             <div class="mb-4" data-controller="character-counter">
-              <%= question_form.label :body, class: "block mb-2" %>
+              <%= question_form.label :body, "問題文", class: "block mb-2" %>
               <%= question_form.text_area :body,
-                  rows: 6,
-                  class: "w-full p-2 border rounded",
-                  placeholder: "次のうち、正しいのはどれ？\nA)○○\nB)○○\nC)○○",
-                  maxlength: 400,
-                  data: {
-                    character_counter_target: "field",
-                    action: "input->character-counter#updateCounter"
-                  } %>
+                rows: 6,
+                class: "w-full p-2 border rounded",
+                maxlength: 400,
+                data: {
+                  character_counter_target: "field",
+                  action: "input->character-counter#updateCounter",
+                  question_type_switcher_target: "bodyField"
+                } %>
 
-            <button type="button"
-                    class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
-                    data-action="click->question-generator#generateQuestion"
-                    data-question-generator-target="generateButton">
-              AIで問題を自動生成
-            </button>
+              <button type="button"
+                class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
+                data-action="click->question-generator#generateQuestion"
+                data-question-generator-target="generateButton">
+                AIで問題を自動生成
+              </button>
 
-            <span data-question-generator-target="status" class="ml-2 text-sm text-gray-600"></span>
-            <div class="text-right text-xs text-gray-500 mt-1">
-              <span data-character-counter-target="counter"><%= @post.daily_question&.body ? @post.daily_question.body.length : 0 %></span>/400字
+              <span data-question-generator-target="status" class="ml-2 text-sm text-gray-600"></span>
+              <div class="text-right text-xs text-gray-500 mt-1">
+                <span data-character-counter-target="counter"><%= @post.daily_question&.body ? @post.daily_question.body.length : 0 %></span>/400字
+              </div>
             </div>
-          </div>
 
-          <div class="mb-4" data-controller="character-counter">
-            <%= question_form.label :question_answer, class: "block mb-2" %>
-            <%= question_form.text_field :question_answer,
-                  class: "w-full p-2 border rounded",
-                  placeholder: "A",
-                  maxlength: 400,
-                  data: {
-                    character_counter_target: "field",
-                    action: "input->character-counter#updateCounter"
-                  } %>
-
-            <div class="text-right text-xs text-gray-500 mt-1">
-              <span data-character-counter-target="counter"><%= @post.daily_question&.question_answer ? @post.daily_question.question_answer.length : 0 %></span>/400字
+            <!-- 解答 -->
+            <div class="mb-4" data-controller="character-counter">
+              <%= question_form.label :question_answer, "解答", class: "block mb-2" %>
+              <%= question_form.text_field :question_answer,
+                class: "w-full p-2 border rounded",
+                maxlength: 400,
+                data: {
+                  character_counter_target: "field",
+                  action: "input->character-counter#updateCounter",
+                  question_type_switcher_target: "answerField"
+                } %>
+              <div class="text-right text-xs text-gray-500 mt-1">
+                <span data-character-counter-target="counter"><%= @post.daily_question&.question_answer ? @post.daily_question.question_answer.length : 0 %></span>/400字
+              </div>
             </div>
-          </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
 
       <div>
