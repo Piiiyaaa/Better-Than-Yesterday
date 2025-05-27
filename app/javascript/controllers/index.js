@@ -22,5 +22,8 @@ application.register("image-preview", ImagePreviewController)
 import QuestionGeneratorController from "./question_generator_controller"
 application.register("question-generator", QuestionGeneratorController)
 
+import QuestionTypeSwitcherController from "./question_type_switcher_controller"
+application.register("question-type-switcher", QuestionTypeSwitcherController)
+
 import ToggleController from "./toggle_controller"
 application.register("toggle", ToggleController)
