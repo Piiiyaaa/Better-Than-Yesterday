@@ -30,13 +30,12 @@ class DailyQuestion < ApplicationRecord
 
   def question_type_name
     case question_type
-    when 'description'
-      '記述式'
-    when 'multiple_choice'
-      '選択式'
-    when 'fill_in_blank'
-      '穴埋め式'
+    when "description"
+      "記述式"
+    when "multiple_choice"
+      "選択式"
+    when "fill_in_blank"
+      "穴埋め式"
     end
   end
-  
 end
