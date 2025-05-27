@@ -115,14 +115,14 @@
                   question_type_switcher_target: "bodyField"
                 } %>
 
-              <button type="button"
-                class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm"
-                data-action="click->question-generator#generateQuestion"
-                data-question-generator-target="generateButton">
-                AIで問題を自動生成
-              </button>
+            <button type="button"
+                    class="mt-2 bg-blue-500 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-2 px-4 rounded text-sm transition-colors duration-200 flex items-center"
+                    data-action="click->question-generator#generateQuestion"
+                    data-question-generator-target="generateButton">
+              AIで問題を自動生成
+            </button>
 
-              <span data-question-generator-target="status" class="ml-2 text-sm text-gray-600"></span>
+            <span data-question-generator-target="status" class="ml-2 text-sm"></span>
               <div class="text-right text-xs text-gray-500 mt-1">
                 <span data-character-counter-target="counter"><%= @post.daily_question&.body ? @post.daily_question.body.length : 0 %></span>/400字
               </div>
