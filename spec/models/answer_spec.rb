@@ -51,7 +51,7 @@ RSpec.describe Answer, type: :model do
     it 'ユーザーの日別統計を取得できる' do
       daily_question = create(:daily_question)
       create(:answer, user: user, daily_question: daily_question, is_correct: true, created_at: Date.current)
-      
+
       stats = Answer.daily_stats_for_user(user, 1)
       expect(stats).to be_an(Array)
       expect(stats.first[:correct_count]).to eq(1)
