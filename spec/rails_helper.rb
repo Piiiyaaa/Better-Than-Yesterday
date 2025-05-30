@@ -34,6 +34,15 @@ Capybara.register_driver :remote_chrome do |app|
   end
 end
 
+Capybara.configure do |config|
+  config.default_max_wait_time = 10  # CI環境対応で長めに設定
+  config.automatic_reload = true
+  config.match = :prefer_exact
+  config.ignore_hidden_elements = true
+  config.visible_text_only = true
+  config.server_errors = []  # サーバーエラーを無視しない
+end
+
 # スクリーンショット設定
 Capybara.save_path = Rails.root.join('tmp/capybara')
 
@@ -92,13 +101,22 @@ RSpec.configure do |config|
   config.before(:each, type: :system) do
     if ENV['CI'] == 'true'
       # GitHub Actions環境ではローカルChromeを使用
-      driven_by :selenium_chrome_headless
+      driven_by :selenium_chrome_headless do |driver_option|
+        driver_option.add_argument('--no-sandbox')
+        driver_option.add_argument('--disable-dev-shm-usage')
+        driver_option.add_argument('--disable-gpu')
+        driver_option.add_argument('--remote-debugging-port=9222')
+        driver_option.add_argument('--window-size=1400,1400')
+        # CI環境では少し長めの待機時間を設定
+        driver_option.add_argument('--disable-web-security')
+      end
+      # CI環境専用の設定
+      Capybara.default_max_wait_time = 15  # CI環境では更に長く
     else
       driven_by :remote_chrome
       Capybara.server_host = 'web'
       # Seleniumのログディレクトリをクリア
       FileUtils.rm_rf(Dir[Rails.root.join('tmp/selenium_logs/*')])
-
       # Capybaraのキャッシュをクリア
       FileUtils.rm_rf(Dir[Rails.root.join('tmp/capybara/*')])
     end
