@@ -4,16 +4,16 @@ RSpec.describe 'Userテスト', type: :system do
   describe 'ユーザー登録フォーム' do
     it 'ユーザー登録ができる' do
       visit new_user_registration_path
-    
+
       fill_in 'user[username]', with: 'testuser'
       fill_in 'user[email]', with: "test_#{SecureRandom.hex(4)}@example.com"
       fill_in 'user[password]', with: 'password123'
       fill_in 'user[password_confirmation]', with: 'password123'
       find('input[type="submit"]').click
-    
+
       # 期待する遷移
       expect(page).to have_current_path(posts_path)
-    
+
     rescue => e
       puts "DEBUG HTML:"
       puts page.body
